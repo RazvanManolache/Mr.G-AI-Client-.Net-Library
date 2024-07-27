@@ -7,7 +7,7 @@ namespace MrG.AI.Client.Data.Socket
 {
     public class SocketMessageResult
     {
-        [JsonProperty("run_uuid")]
+        [JsonProperty("batch_request_uuids")]
         public List<string> RunUuids { get; set; }
     }
 }

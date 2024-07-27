@@ -145,10 +145,10 @@ namespace MrG.AI.Client.Helpers
                                 request.RequestStatus = RequestStatus.Queued;
                                 if(messageObject.Data.Result != null)
                                 {
-                                    var run_uuid = messageObject.Data.Result.RunUuids;
-                                    if(run_uuid!=null)
+                                    var BatchRequestUuids = messageObject.Data.Result.RunUuids;
+                                    if(BatchRequestUuids!=null)
                                     {
-                                        foreach (var ruuid in run_uuid)
+                                        foreach (var ruuid in BatchRequestUuids)
                                         {
                                             RunItem runItem = new RunItem();
                                             runItem.Uuid = ruuid;
