@@ -1,0 +1,35 @@
+name: Build library package
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-dotnet@v6.1.0
+        with:
+          dotnet-version: '10.0.x'
+      - name: Build library
+        run: dotnet build MrG.AI.Client.csproj -c Release --nologo --warnaserror
+      - name: Create downloadable NuGet package
+        run: dotnet pack MrG.AI.Client.csproj -c Release --no-build --output dist -p:PackageVersion=1.0.0-ci.${{ github.run_number }} -p:RepositoryCommit=${{ github.sha }}
+      - name: Record checksums
+        run: cd dist && sha256sum ./*.nupkg > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: MrG-AI-Client-nuget
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
